@@ -89,7 +89,13 @@ export PATH=&apos;/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin&a
 curl -X POST &quot;http://voltha:11777ff9b4b53d3b0ed4eb08b206214c9e@172.17.10.64:8080/job/5_RF_Auto_Test/buildWithParameters?PLTFORM=$PLTFORM&amp;ONL_ID=$ONL_ID&amp;PSME_VER=$PSME_VER&amp;BAL_SDK_VER=$BAL_SDK_VER&amp;MDATE=$MDATE&quot;</command>
     </hudson.tasks.Shell>
   </builders>
-  <publishers/>
+  <publishers>
+    <hudson.tasks.Mailer plugin="mailer@1.23">
+      <recipients>abrother94@gmail.com</recipients>
+      <dontNotifyEveryUnstableBuild>false</dontNotifyEveryUnstableBuild>
+      <sendToIndividuals>false</sendToIndividuals>
+    </hudson.tasks.Mailer>
+  </publishers>
   <buildWrappers>
     <hudson.plugins.timestamper.TimestamperBuildWrapper plugin="timestamper@1.9"/>
   </buildWrappers>
