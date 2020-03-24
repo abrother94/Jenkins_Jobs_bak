@@ -18,25 +18,32 @@ curl -X POST &quot;http://voltha:11aad495d8f017648827a9c41468cd6c6e@172.17.10.60
         <hudson.model.StringParameterDefinition>
           <name>ONL_ID</name>
           <description></description>
-          <defaultValue>b4af32e</defaultValue>
+          <defaultValue>master</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>PSME_VER</name>
           <description></description>
-          <defaultValue>2.1.3.59.24</defaultValue>
+          <defaultValue>2.1.3.59.25</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>BAL_SDK_VER</name>
           <description></description>
-          <defaultValue>3.2.2.2</defaultValue>
+          <defaultValue>3.4.3.3</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>MDATE</name>
           <description></description>
-          <defaultValue>2019-12-10</defaultValue>
+          <defaultValue>2020-03-19-PM-05-13-asfvolt16-3.4.3.3-2.1.3.59.25-master</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>Build_PSME_ONLY</name>
+          <description>Only build PSEM only, set it to &quot;True&quot;
+This needs a well build ONL and BAL docker in env.</description>
+          <defaultValue>True</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
       </parameterDefinitions>
@@ -51,7 +58,7 @@ curl -X POST &quot;http://voltha:11aad495d8f017648827a9c41468cd6c6e@172.17.10.60
   <concurrentBuild>false</concurrentBuild>
   <builders>
     <org.jvnet.hudson.plugins.SSHBuilder plugin="ssh@2.6.1">
-      <siteName>root@172.17.8.181:22</siteName>
+      <siteName>root@172.17.8.5:22</siteName>
       <command>#!/bin/bash
 #Above IP address need depend on your working OLT real IP address
 onl-onie-boot-mode uninstall
@@ -77,7 +84,7 @@ while [ $c != 0 ];do
 done</command>
     </hudson.tasks.Shell>
     <org.jvnet.hudson.plugins.SSHBuilder plugin="ssh@2.6.1">
-      <siteName>root@172.17.8.181:22</siteName>
+      <siteName>root@172.17.8.5:22</siteName>
       <command>#!/bin/bash
 #Above IP address need depend on your working OLT real IP address
 echo &quot;ONL_COMMIT_ID[$ONL_ID]&quot;
@@ -87,7 +94,7 @@ echo &quot;BAL_SDK_VER[$BAL_SDK_VER]&quot;
 echo &quot;MDATE[$MDATE]&quot;
 pwd
 DATE=$MDATE
-export PATH=&apos;/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin&apos;;export;onie-nos-install tftp://172.17.9.146/Daily_Build/$PLTFORM/$DATE/ONL_INSTALLER
+export PATH=&apos;/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin&apos;;onie-nos-install tftp://172.17.9.146/Daily_Build/$PLTFORM/$DATE/ONL_INSTALLER
 </command>
       <execEachLine>false</execEachLine>
       <hideCommand>false</hideCommand>
@@ -95,17 +102,11 @@ export PATH=&apos;/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin&a
     <hudson.tasks.Shell>
       <command>#!/bin/bash
 export PATH=&apos;/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin&apos;
-curl -X POST &quot;http://voltha:11aad495d8f017648827a9c41468cd6c6e@172.17.10.60:8080/job/3_Install_Bal_Psme/buildWithParameters?PLTFORM=$PLTFORM&amp;ONL_ID=$ONL_ID&amp;PSME_VER=$PSME_VER&amp;BAL_SDK_VER=$BAL_SDK_VER&amp;MDATE=$MDATE&quot;</command>
+curl -X POST &quot;http://voltha:11aad495d8f017648827a9c41468cd6c6e@172.17.10.60:8080/job/3_Install_Bal_Psme/buildWithParameters?PLTFORM=$PLTFORM&amp;ONL_ID=$ONL_ID&amp;PSME_VER=$PSME_VER&amp;BAL_SDK_VER=$BAL_SDK_VER&amp;MDATE=$MDATE&amp;Build_PSME_ONLY=$Build_PSME_ONLY&quot;</command>
     </hudson.tasks.Shell>
   </builders>
-  <publishers>
-    <hudson.tasks.Mailer plugin="mailer@1.23">
-      <recipients>abrother94@gmail.com</recipients>
-      <dontNotifyEveryUnstableBuild>false</dontNotifyEveryUnstableBuild>
-      <sendToIndividuals>false</sendToIndividuals>
-    </hudson.tasks.Mailer>
-  </publishers>
+  <publishers/>
   <buildWrappers>
-    <hudson.plugins.timestamper.TimestamperBuildWrapper plugin="timestamper@1.9"/>
+    <hudson.plugins.timestamper.TimestamperBuildWrapper plugin="timestamper@1.10"/>
   </buildWrappers>
 </project>
